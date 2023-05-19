@@ -10,7 +10,6 @@ Run the first test example:
 ```bash
 node tests/players.js
 ```
-
 ## Notes
 * Application setup (see `docker-compose.yml` for more info):
   * Nodejs app:
