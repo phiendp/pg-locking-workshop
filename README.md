@@ -8,8 +8,9 @@ docker compose up
 
 Run the first test example:
 ```bash
-node tests/players.js
+docker exec pg-locking-workshop-app-1 node tests/players.js
 ```
+
 ## Notes
 * Application setup (see `docker-compose.yml` for more info):
   * Nodejs app:
