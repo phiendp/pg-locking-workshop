@@ -138,6 +138,49 @@ app.post("/players_plus", async (req, res, next) => {
   }
 });
 
+// Note: WIP
+app.post("/move_player", async (req, res, next) => {
+  const client = await pool.connect()
+  const playerId = req.body.player_id
+  const teamName = req.body.team_name
+
+  try {
+    await client.query("BEGIN")
+
+    // Fetch the current player record
+    const { rows: playerRows } = await client.query("SELECT * FROM players WHERE id = $1", [playerId])
+    const player = playerRows[0];
+    const oldTeamId = player.team_id
+    if (!player) throw new Error(`Player not found: ${playerId}`)
+
+    // Fetch the current team record
+    const { rows: teamRows } = await client.query("SELECT * FROM teams WHERE name = $1", [teamName])
+    const targetTeam = teamRows[0];
+    if (!targetTeam) throw new Error(`Team not found: ${teamName}`)
+
+    // Update the player record to set the new team ID
+    await client.query("UPDATE players SET team_id = $1 WHERE id = $2", [targetTeam.id, playerId])
+
+    // Update the player_count of the old team
+    await client.query(
+      "UPDATE teams SET player_count = player_count - 1 WHERE id = $1",
+      [oldTeamId]
+    );
+
+    // Update the player_count for the new team
+    await client.query("UPDATE teams SET player_count = player_count + 1 WHERE id = $1", [targetTeam.id])
+
+    // Finish
+    await client.query("COMMIT")
+    res.status(200).send("OK")
+  } catch (e) {
+    await client.query("ROLLBACK")
+    next(e)
+  } finally {
+    client.release()
+  }
+});
+
 (async () => {
   app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
