@@ -24,3 +24,8 @@ docker exec pg-locking-workshop-app-1 node tests/players.js
 
 ### Helper commands
 * Interactive postgres console: `docker exec -it pg-locking-workshop-postgres-1 psql`
+
+
+## ToDo
+- [ ] Review previous case
+- [ ] Rework on case 3
