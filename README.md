@@ -1,3 +1,6 @@
+## Introduction
+Holistics' internal workshop on database locking, in the context of PostgreSQL
+
 ## Getting started
 
 To use this project make sure you have [Docker](https://www.docker.com/get-started) installed then run the following command on your terminal:
